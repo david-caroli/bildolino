@@ -1,0 +1,5 @@
+- ImageMagick++ - feature rich (fat), supports png, jpeg, svg, and many(!) more
+- libpng (png, png++ as possible wrapper)
+- jpeglib (jpeg, JPEGReader/Writer as possible wrapper)
+- pure xml svg (simple solution for lines in svg)
+- Boost GIL (png, jpeg, tiff)
