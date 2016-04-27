@@ -1,4 +1,4 @@
-# source: https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore
+# modified from: https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore
 
 # Compiled Object files
 *.slo
@@ -28,4 +28,7 @@
 *.exe
 *.out
 *.app
+
+# bin directory
+bin/*
 
