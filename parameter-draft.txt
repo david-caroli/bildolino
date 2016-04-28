@@ -1,0 +1,90 @@
+
+-l --lines <number>
+		number of lines to be drawn
+-tl --test-lines <number>
+		number of random test lines evaluated for each line
+
+-lt --line-transparency <number>
+		transparency of the lines drawn
+-lw --line-width <number>
+		(low implementation priority)
+		width of the lines drawn (where lines are drawn is still calculated with a width of 1 !)
+-add --additive
+		add lines to black background
+-sub --subtractive
+		substract lines from white background
+
+-gray --grayscale
+		work on a grayscale image, draw black/white lines only
+-col --color
+		(low implementation priority)
+		work on a rgb image, draw red, green and blue lines (triples number of lines drawn!)
+
+-res --resize <width> <height>
+		(low implementation priority)
+		resize the image before starting the algorithm
+
+
+
+-tc --thread-count <number>
+		the number of threads used (for max. performance equal to number of processor cores)
+
+
+
+-inp --input-png <file>
+		read input file in png format
+-inj --input-jpeg <file>
+		read input file in jpeg format
+
+-outs --output-svg <file>
+		write output file in svg format (file name not modified) (recommended)
+-outp --output-png <file>
+		write output file in png format (file name not modified)
+-outj --output-jpeg <file>
+		write output file in jpeg format (file name not modified)
+-outsp --output-svg-png <file>
+		write output file in svg and png format (appends .svg and .png to file name)
+-outsj --output-svg-jpeg <file>
+		write output file in svg and jpeg format (appends .svg and .jpg to file name)
+-outpj --output-png-jpeg <file>
+		write output file in png and jpeg format (appends .png and .jpg to file name)
+-outspj --output-svg-png-jpeg <file>
+		write output file in svg, png and jpeg format (appends .svg, .png and .jpg to file name)
+
+
+
+-svgrmlines --modify-custom-svg-remove-lines <number> <file>
+		(low implementation priority)
+		removes the last n lines from an svg created with this tool
+-svgmodlinet --modify-custom-svg-mod-line-transparency <number> <file>
+		(low implementation priority)
+		change line transparency of an svg created with this tool
+-svgmodlinew --modify-custom-svg-mod-line-width <number> <file>
+		(low implementation priority)
+		change lines width of an svg created with this tool
+-svginvertcol --modify-custom-svg-invert-colors <file>
+		(low implementation priority) (maybe grayscale only)
+		invert colors of an svg created with this tool
+
+
+
+-v --version
+		(low implementation priority)
+		show version
+
+-nop --no-progress
+		(low implementation priority)
+		don't show progress
+-now --no-warnings
+		(low implementation priority)
+		don't show warnings
+-noe --no-errors
+		(low implementation priority)
+		don't show errors
+-q --quiet
+		(low implementation priority)
+		no output (no progress, warnings, or errors)
+
+-i --interactive
+		(low implementation priority)
+		start in interactive mode, all other parameters will be ignored
