@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
 	while (linecount<20000){
 		ofstream outfile;
 		outfile.open("randrom-"+to_string(linecount)+".svg");
-		outfile << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"" << input.width() << "\" height=\"" << input.height() << "\" style = \"background: white\">\n";
+		outfile << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"" << input.width() << "\" height=\"" << input.height() << "\" style = \"background: white\">\n\t<defs>\n\t\t<style type=\"text/css\"><![CDATA[\n\t\t\tline{\n\t\t\t\tstroke-width:0.5;\n\t\t\t\tstroke-opacity:0.5;\n\t\t\t}\n\t\t]]></style>\n\t</defs>\n";
 		for(int y=0; y<linecount; y++){
-			outfile << "	<line x1=\"0\" y1=\"" << rand() % input.height() << "\" x2=\"" << input.width() << "\" y2=\"" << rand() % input.height() << "\" stroke=\"black\" stroke-width=\"0.5\" />\n";
+			outfile << "	<line x1=\"0\" y1=\"" << rand() % input.height() << "\" x2=\"" << input.width() << "\" y2=\"" << rand() % input.height() << "\" stroke=\"black\"/>\n";
 		}
 		outfile << "</svg>";
 		outfile.close();
