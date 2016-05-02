@@ -32,7 +32,7 @@
 
 
 -inp --input-png <file>
-		read input file in png format
+		read input file in png format. (inp and inj could be joined in future implementation)
 -inj --input-jpeg <file>
 		read input file in jpeg format
 
@@ -66,6 +66,9 @@
 		(low implementation priority) (maybe grayscale only)
 		invert colors of an svg created with this tool
 
+-svgconvert --convert-svg-to-pixel-format <file>
+		(low implementation priority)
+		converts svg as given output-flag 
 
 
 -v --version
