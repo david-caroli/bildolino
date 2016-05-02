@@ -1,0 +1,32 @@
+# copy to src directory
+BIN = ../bin
+CC = g++
+CFLAGS = -std=c++11
+OBJECTS = $(BIN)/line-drawer.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o $(BIN)/line-struct.o
+
+
+all: $(BIN)/bildolino-linux
+
+$(BIN)/bildolino-linux: object-files
+	$(CC) $(CFLAGS) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux
+
+object-files: $(OBJECTS)
+
+$(BIN)/line-drawer.o: line-drawer.hpp line-drawer.cpp $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o
+	g++ $(CFLAGS) -c line-drawer.cpp -o $(BIN)/line-drawer.o
+
+$(BIN)/bresenham-line-algorithms.o: bresenham-line-algorithms.hpp bresenham-line-algorithms.cpp $(BIN)/line-struct.o
+	g++ $(CFLAGS) -c bresenham-line-algorithms.cpp -o $(BIN)/bresenham-line-algorithms.o
+
+$(BIN)/svg-files.o: svg-files.hpp svg-files.cpp $(BIN)/line-struct.o
+	g++ $(CFLAGS) -c svg-files.cpp -o $(BIN)/svg-files.o
+
+# is this even useful?
+$(BIN)/line-struct.o: line-struct.hpp
+	g++ $(CFLAGS) -c line-struct.hpp -o $(BIN)/line-struct.o
+
+
+
+.PHONY: clean
+clean:
+	rm $(BIN)/*.o

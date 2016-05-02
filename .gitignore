@@ -32,3 +32,5 @@
 # bin directory
 bin/*
 
+# makfile in src directory
+src/makefile
