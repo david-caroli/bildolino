@@ -7,12 +7,17 @@
 
 
 
+// uses the bresenham algorithm to draw a 1 pixel grayscale line on the image view img
+void drawGrayscaleLine(boost::gil::gray8_view_t &img, LineData line, int opacity, bool additive);
+void drawGrayscaleLineNormalAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+void drawGrayscaleLineSteepAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+void drawGrayscaleLineNormalAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+void drawGrayscaleLineSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity);
 
-template <typename T> void drawLine(T &img, LineData line, int opacity);
-template <typename T> unsigned long lineScore(T &img, int opacity);
-
-
-
+// uses the bresenham algorithm to calculate a score of how much a drawn 1 pixel grayscale line would change the image
+unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line);
+unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineData line);
+unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineData line);
 
 
 
