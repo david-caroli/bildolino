@@ -7,7 +7,7 @@ OBJECTS = $(BIN)/line-drawer.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-fil
 
 all: $(BIN)/bildolino-linux
 
-$(BIN)/bildolino-linux: object-files
+$(BIN)/bildolino-linux: $(OBJECTS)
 	$(CC) $(CFLAGS) -pthread main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux
 
 object-files: $(OBJECTS)
