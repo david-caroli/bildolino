@@ -34,6 +34,10 @@ void lcWaitForInit(LockCircle &lc);
 // aquires the next lock, then releases the current lock
 // this changes the value of the int reference currentLock
 void lcGetNextLock(LockCircle &lc, unsigned int &currentLock);
+// frees the current lock. use for cleanup
+void lcUnlock(LockCircle &lc, unsigned int &currentLock);
+// deletes dynamically allocated memory (mutex array). use after unlocking all locks
+void lcCleanup(LockCircle &lc);
 
 
 #endif // LOCK_CIRCLE_HPP

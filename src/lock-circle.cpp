@@ -41,3 +41,10 @@ void lcGetNextLock(LockCircle &lc, unsigned int &currentLock) {
 	currentLock = nextLock;
 }
 
+void lcUnlock(LockCircle &lc, unsigned int &currentLock) {
+	lc.locks[currentLock].unlock();
+}
+
+void lcCleanup(LockCircle &lc) {
+	delete[] lc.locks;
+}
