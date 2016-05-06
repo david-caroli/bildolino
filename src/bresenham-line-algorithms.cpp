@@ -4,9 +4,9 @@
 
 
 void drawGrayscaleLine(boost::gil::gray8_view_t &img, LineData line, int opacity, bool additive) {
-	if(abs(line.y1 - line.y0) > abs(line.x1 - line.x0)) {
-		std::swap(line.x0, line.y0);
-		std::swap(line.x1, line.y1);
+	if(abs(line.b.y - line.a.y) > abs(line.b.x - line.a.x)) {
+		std::swap(line.a.x, line.a.y);
+		std::swap(line.b.x, line.b.y);
 		if(additive) {
 			drawGrayscaleLineSteepAngleAdditive(img, line, opacity);
 		} else {
@@ -22,19 +22,17 @@ void drawGrayscaleLine(boost::gil::gray8_view_t &img, LineData line, int opacity
 }
 
 void drawGrayscaleLineNormalAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		img(x,y) = (img(x,y)+opacity) % 256;
 		error -= dy;
 		if(error < 0) {
@@ -45,19 +43,17 @@ void drawGrayscaleLineNormalAngleAdditive(boost::gil::gray8_view_t &img, LineDat
 }
 
 void drawGrayscaleLineSteepAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		img(y,x) = (img(y,x)+opacity) % 256;
 		error -= dy;
 		if(error < 0) {
@@ -68,19 +64,17 @@ void drawGrayscaleLineSteepAngleAdditive(boost::gil::gray8_view_t &img, LineData
 }
 
 void drawGrayscaleLineNormalAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		if(img(x,y) >= opacity) {
 			img(x,y) = img(x,y) - opacity;
 		} else {
@@ -95,19 +89,17 @@ void drawGrayscaleLineNormalAngleSubtractive(boost::gil::gray8_view_t &img, Line
 }
 
 void drawGrayscaleLineSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		if(img(y,x) >= opacity) {
 			img(y,x) = img(y,x) - opacity;
 		} else {
@@ -126,9 +118,9 @@ void drawGrayscaleLineSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineD
 
 
 unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line) {
-	if(abs(line.y1 - line.y0) > abs(line.x1 - line.x0)) {
-		std::swap(line.x0, line.y0);
-		std::swap(line.x1, line.y1);
+	if(abs(line.b.y - line.a.y) > abs(line.b.x - line.a.x)) {
+		std::swap(line.a.x, line.a.y);
+		std::swap(line.b.x, line.b.y);
 		return grayscaleLineScoreSteepAngle(img, line);
 	} else {
 		return grayscaleLineScoreNormalAngle(img, line);
@@ -136,20 +128,18 @@ unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line) {
 }
 
 unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineData line) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 	unsigned long score = 0;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		score += img(x,y);
 		error -= dy;
 		if(error < 0) {
@@ -161,20 +151,18 @@ unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineD
 }
 
 unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineData line) {
-	if(line.x0 > line.x1) {
-		std::swap(line.x0, line.x1);
-		std::swap(line.y0, line.y1);
-	}
+	if(line.a.x > line.b.x)
+		std::swap(line.a, line.b);
 
-	float dx = line.x1 - line.x0;
-	float dy = abs(line.y1 - line.y0);
+	float dx = line.b.x - line.a.x;
+	float dy = abs(line.b.y - line.a.y);
 	float error = dx / 2.0f;
-	int ystep = (line.y0 < line.y1) ? 1 : -1;
-	int y = line.y0;
-	const int maxX = 1+line.x1;
+	int ystep = (line.a.y < line.b.y) ? 1 : -1;
+	int y = line.a.y;
+	const int maxX = 1+line.b.x;
 	unsigned long score = 0;
 
-	for(int x=line.x0; x<maxX; x++) {
+	for(int x=line.a.x; x<maxX; x++) {
 		score += img(y,x);
 		error -= dy;
 		if(error < 0) {

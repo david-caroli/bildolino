@@ -3,10 +3,14 @@
 
 
 typedef struct {
-	int x0;
-	int y0;
-	int x1;
-	int y1;
+	int x;
+	int y;
+} PixelCoords;
+
+
+typedef struct {
+	PixelCoords a;
+	PixelCoords b;
 	// keep opacity and width separate as they are the same for all lines
 } LineData;
 
