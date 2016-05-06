@@ -26,13 +26,41 @@ void loadAndRedrawImage(int lineCount,
 				std::cout << "Error: unable to open file" << std::endl;
 			return;
 		}
+		gray8_view_t imgView = view(img);
 		if(showProgress)
 			std::cout << "image loaded" << std::endl;
 		// TODO implement resizing
-		// TODO open line svg files and pass them to drawing function
-		gray8_view_t imgView = view(img);
-		redrawInGrayscale(lineCount, testLineCount, lineOpacity, lineWidth, additive, threadCount, showProgress, showWarnings, showErrors, imgView);
-		// TODO draw and save result to png and jpeg files, and finish and close svg files
+		// open line svg files and pass them to drawing function
+		std::vector<std::fstream*> svgFiles;
+		std::fstream *svgF;
+		for(unsigned int i=0; i<outputFiles.size(); ++i) {
+			if(outputFiles[i].type == OUT_F_SVG) {
+				// here could be an option to only append to an allready started image, in order to prevent losing all progress on crashing
+				svgF = new std::fstream(outputFiles[i].filePath.c_str(), std::ios::out | std::ios::trunc);
+				if(!svgF->is_open()) {
+					delete svgF;
+					for(unsigned int j=0; j<svgFiles.size(); ++j) {
+						svgFiles[j]->close();
+						delete svgFiles[j];
+					}
+					svgFiles.clear();
+					if(showErrors)
+						std::cout << "Error: unable to open file: \"" << outputFiles[i].filePath << "\"" << std::endl;
+					return;
+				}
+				initSvg(*svgF, imgView.height(), imgView.width(), additive, lineOpacity, lineWidth);
+				svgFiles.push_back(svgF);
+			}
+		}
+		// draw
+		redrawInGrayscale(lineCount, testLineCount, lineOpacity, lineWidth, additive, threadCount, showProgress, showWarnings, showErrors, imgView, svgFiles);
+		// close svg files
+		for(unsigned int i=0; i<svgFiles.size(); ++i) {
+			finishSvg(*svgFiles[i]);
+			svgFiles[i]->close();
+			delete svgFiles[i];
+		}
+		// TODO draw and save result to png and jpeg files
 	} else {
 		// TODO implement color mode
 		if(showErrors)
@@ -79,7 +107,8 @@ void redrawInGrayscale(int lineCount,
 					   bool showProgress,
 					   bool showWarnings,
 					   bool showErrors,
-					   gray8_view_t &img) {
+					   gray8_view_t &img,
+					   std::vector<std::fstream*> &svgFiles) {
 	// sort pixels
 	if(showProgress)
 		std::cout << "sorting pixels" << std::endl;
@@ -113,10 +142,19 @@ void redrawInGrayscale(int lineCount,
 	LineData selectedLines[lineCount];
 	unsigned long currentScore;
 	for(int l=0; l<lineCount; ++l) {
-		// got through all locks until threads done, then go active again
-		for(int i=0; i<LOCK_COUNT; ++i)
-			for(int t=0; t<threadCount; ++t)
-				lcGetNextLock(lc[t], currLock[t]);
+		// got through all locks for inactivity, let threads work
+		for(int t=0; t<threadCount; ++t) {
+			lcGetNextLock(lc[t], currLock[t]);
+			lcGetNextLock(lc[t], currLock[t]);
+		}
+		// push last finished line to svg files while threads work on next line
+		if(l > 0) {
+			for(unsigned int i=0; i<svgFiles.size(); ++i)
+				addLineGrey(*svgFiles[i], selectedLines[l-1]);
+		}
+		// go active again after threads finish
+		for(int t=0; t<threadCount; ++t)
+			lcGetNextLock(lc[t], currLock[t]);
 		// find best line
 		currentScore = bestLineScore[0];
 		selectedLines[l] = bestLine[0];
@@ -128,8 +166,11 @@ void redrawInGrayscale(int lineCount,
 		}
 		// substract best line from image (negate additive)
 		drawGrayscaleLine(img, selectedLines[l], lineOpacity, !additive);
-		// TODO push line buffer to svg file
 	}
+	// push remaining line to svg files
+	for(unsigned int i=0; i<svgFiles.size(); ++i)
+		addLineGrey(*svgFiles[i], selectedLines[lineCount-1]);
+	// cleanup and waiting for threads to finish
 	for(int t=0; t<threadCount; ++t) {
 		lcUnlock(lc[t], currLock[t]);
 		tlThread[t]->join();

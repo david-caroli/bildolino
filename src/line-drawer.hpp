@@ -15,7 +15,6 @@
 
 
 #define LOCK_COUNT 3
-#define LINE_BUFFER_SIZE 1000
 
 
 enum OutputFileType { OUT_F_SVG, OUT_F_PNG, OUT_F_JPEG, OUT_F_UNDEFINED };
@@ -55,7 +54,8 @@ void redrawInGrayscale(int lineCount,
 					   bool showProgress,
 					   bool showWarnings,
 					   bool showErrors,
-					   boost::gil::gray8_view_t &img);
+					   boost::gil::gray8_view_t &img,
+					   std::vector<std::fstream*> &svgFiles);
 
 void sortPixels(int pixelCount, PixelCoords *result, bool additive, boost::gil::gray8_view_t &img);
 int getPixelPos(int curPixelValue, int resultSize, PixelCoords *result, bool additive, boost::gil::gray8_view_t &img);
