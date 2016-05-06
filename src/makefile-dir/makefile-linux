@@ -9,7 +9,7 @@ all: $(BIN)/bildolino-linux
 
 # this might need -lm sometime (not sure why, but it is used by libpng in certain cases)
 $(BIN)/bildolino-linux: $(OBJECTS)
-	$(CC) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux -static $(CFLAGS) -pthread -lpng -lz
+	$(CC) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux -static $(CFLAGS) -pthread -lpng -ljpeg -lz
 
 object-files: $(OBJECTS)
 
