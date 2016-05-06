@@ -41,10 +41,32 @@ void loadAndRedrawImage(int lineCount,
 }
 
 bool loadRGBImage(std::string inputFile, rgb8_image_t &img) {
-	return false; // TODO implement loading images
+	// try jpeg format
+	try {
+		jpeg_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// try png format
+	try {
+		png_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// unable to read file or neither jpeg nor png
+	return false;
 }
 bool loadGrayImage(std::string inputFile, gray8_image_t &img) {
-	return false; // TODO implement loading images
+	// try jpeg format
+	try {
+		jpeg_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// try png format
+	try {
+		png_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// unable to read file or neither jpeg nor png
+	return false;
 }
 
 
