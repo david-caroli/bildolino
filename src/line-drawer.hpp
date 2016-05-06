@@ -7,9 +7,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <random>
 #include "bresenham-line-algorithms.hpp"
 #include "svg-files.hpp"
 #include "lock-circle.hpp"
+#include "line-rectangle-intersection.hpp"
 
 
 #define LOCK_COUNT 3
@@ -22,14 +24,8 @@ typedef struct {
 	OutputFileType type;
 } OutputFile;
 
-typedef struct {
-	int x;
-	int y;
-} PixelCoords;
 
-typedef struct {
-	boost::gil::gray8_view_t *imgView;
-} TestViewWrapper;
+
 
 void loadAndRedrawImage(int lineCount,
 						int testLineCount,
@@ -69,6 +65,7 @@ void grayscaleTestLineThread(int lineCount,
 							 bool additive, // false -> subtractive
 							 int threadCount,
 							 int threadNumber,
+							 LockCircle *lc,
 							 PixelCoords *bestPixels,
 							 boost::gil::gray8_view_t *img,
 							 unsigned long *bestLineScore,
@@ -76,3 +73,4 @@ void grayscaleTestLineThread(int lineCount,
 
 
 #endif // LINE_DRAWER_HPP
+

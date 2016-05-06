@@ -79,8 +79,7 @@ void redrawInGrayscale(int lineCount,
 	unsigned long bestLineScore[threadCount];
 	//TestViewWrapper testWrapper[threadCount];
 	for(int t=0; t<threadCount; ++t) {
-		//testWrapper[t].imgView = &img;
-		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), additive, threadCount, t, &bestPixels[0], &img, &bestLineScore[t], &bestLine[t]);
+		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), additive, threadCount, t, &lc[t], &bestPixels[0], &img, &bestLineScore[t], &bestLine[t]);
 	}
 	// wait for threads to initiate lock circles
 	for(int t=0; t<threadCount; ++t) {
@@ -110,19 +109,21 @@ void redrawInGrayscale(int lineCount,
 		// TODO safe line coords to buff (and optionally push buffer to svg file)
 	}
 	for(int t=0; t<threadCount; ++t) {
+		lcUnlock(lc[t], currLock[t]);
 		tlThread[t]->join();
 		delete tlThread[t];
+		lcCleanup(lc[t]);
 	}
 }
 
 
 void sortPixels(int pixelCount, PixelCoords *result, bool additive, boost::gil::gray8_view_t &img) {
-	int sorted = 1; // start with size 1
-	result[0].x = 0;
-	result[0].y = 0;
+	// does not use any border pixels as they lead to annoying edge cases, and will very likely get lines through them as each line will pass through two borders
+	// side effect: this will make lines allong an edge impossible
+	int sorted = 0;
 	int pos;
-	for(int y=0; y<img.height(); ++y) {
-		for(int x=1; x<img.width(); ++x) {
+	for(int y=1; y<img.height()-1; ++y) {
+		for(int x=1; x<img.width()-1; ++x) {
 			pos = getPixelPos(img(x,y), sorted, result, additive, img);
 			if(pos < pixelCount) {
 				if(sorted < pixelCount) // grow until array is full
@@ -139,7 +140,7 @@ void sortPixels(int pixelCount, PixelCoords *result, bool additive, boost::gil::
 int getPixelPos(int curPixelValue, int resultSize, PixelCoords *result, bool additive, boost::gil::gray8_view_t &img) {
 	// binary search
 	int left = 0;
-	int right = resultSize+1;
+	int right = resultSize;
 	int center;
 	while(left != right) {
 		center = (left+right)/2;
@@ -167,9 +168,81 @@ void grayscaleTestLineThread(int lineCount,
 							 bool additive, // false -> subtractive
 							 int threadCount,
 							 int threadNumber,
+							 LockCircle *lc,
 							 PixelCoords *bestPixels,
 							 boost::gil::gray8_view_t *img,
 							 unsigned long *bestLineScore,
 							 LineData *bestLine) {
+	// lock circle init
+	unsigned int currLock = lc->n-1;
+	lcThreadInit(*lc, false, currLock);
+	lcWaitForInit(*lc);
 	
+	// random generator
+	int xRangeStart = 0;
+	for(int t=0; t<threadNumber; ++t)
+		xRangeStart += (img->width()/threadCount) + (t<(img->width()%threadCount) ? 1:0);
+	int xRange = (img->width()/threadCount) + (threadNumber<(img->width()%threadCount) ? 1:0);
+	int yRangeStart = 0;
+	for(int t=0; t<threadNumber; ++t)
+		yRangeStart += (img->height()/threadCount) + (t<(img->height()%threadCount) ? 1:0);
+	int yRange = (img->height()/threadCount) + (threadNumber<(img->height()%threadCount) ? 1:0);
+	std::minstd_rand randGen;
+	std::uniform_int_distribution<int> xDistribution(0, xRange-1);
+	std::uniform_int_distribution<int> yDistribution(0, yRange-1);
+	
+	// vars
+	int xLeft=0, xRight=img->width()-1;
+	int yTop=0, yBot=img->height()-1;
+	int testL=0, side, rand;
+	unsigned long currScore;
+	LineData currLine;
+
+	// iterate selected best pixels to draw test lines
+	for(int l=0; l<lineCount; ++l) {
+		// get active lock
+		lcGetNextLock(*lc, currLock);
+		// score init test line starting from the bottom
+		bestLine->a.x = xRangeStart + xDistribution(randGen);
+		bestLine->a.y = yBot;
+		bestLine->b = getLineBorderPoint(currLine.a, bestPixels[l], xRight, yBot);
+		*bestLineScore = grayscaleLineScore(*img, *bestLine);
+		// score test lines
+		for(testL=1; testL<testLineCount;) {
+			// iterate the for rectangle sides
+			for(side=0; side<4 && testL<testLineCount; ++side) {
+				switch(side) {
+					case 0: // left
+						currLine.a.x = xLeft;
+						currLine.a.y = yRangeStart + yDistribution(randGen);
+						break;
+					case 1: // top
+						currLine.a.x = xRangeStart + xDistribution(randGen);
+						currLine.a.y = yTop;
+						break;
+					case 2: // right
+						currLine.a.x = xRight;
+						currLine.a.y = yRangeStart + yDistribution(randGen);
+						break;
+					case 3: // bottom
+						currLine.a.x = xRangeStart + xDistribution(randGen);
+						currLine.a.y = yBot;
+						break;
+				}
+				currLine.b = getLineBorderPoint(currLine.a, bestPixels[l], xRight, yBot);
+				// score test line and compare to best test line
+				currScore = grayscaleLineScore(*img, currLine);
+				if((currScore > *bestLineScore) == additive) {
+					*bestLine = currLine;
+					*bestLineScore = currScore;
+				}
+				++testL;
+			}
+		}
+		// get inactive lock and pass active lock on
+		lcGetNextLock(*lc, currLock);
+		lcGetNextLock(*lc, currLock);
+	}
+	// lock circle cleanup
+	lcUnlock(*lc, currLock);
 }
