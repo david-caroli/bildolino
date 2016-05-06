@@ -29,12 +29,12 @@ void loadAndRedrawImage(int lineCount,
 		if(showProgress)
 			std::cout << "image loaded" << std::endl;
 		// TODO implement resizing
-		// TODO open line svg files and pass them
+		// TODO open line svg files and pass them to drawing function
 		gray8_view_t imgView = view(img);
 		redrawInGrayscale(lineCount, testLineCount, lineOpacity, lineWidth, additive, threadCount, showProgress, showWarnings, showErrors, imgView);
-		// TODO save result and close svg file
+		// TODO draw and save result to png and jpeg files, and finish and close svg files
 	} else {
-		// TODO implement
+		// TODO implement color mode
 		if(showErrors)
 			std::cout << "Error: color mode is not yet implemented" << std::endl;
 	}
@@ -128,7 +128,7 @@ void redrawInGrayscale(int lineCount,
 		}
 		// substract best line from image (negate additive)
 		drawGrayscaleLine(img, selectedLines[l], lineOpacity, !additive);
-		// TODO safe line coords to buff (and optionally push buffer to svg file)
+		// TODO push line buffer to svg file
 	}
 	for(int t=0; t<threadCount; ++t) {
 		lcUnlock(lc[t], currLock[t]);
