@@ -60,6 +60,8 @@ void loadAndRedrawImage(int lineCount,
 			svgFiles[i]->close();
 			delete svgFiles[i];
 		}
+		if(showProgress)
+			std::cout << "svg file(s) saved" << std::endl;
 		// TODO draw and save result to png and jpeg files
 	} else {
 		// TODO implement color mode
@@ -138,9 +140,10 @@ void redrawInGrayscale(int lineCount,
 	}
 	// draw lines
 	if(showProgress)
-		std::cout << "starting to draw" << std::endl;
+		std::cout << "starting to calculate lines" << std::endl;
 	LineData selectedLines[lineCount];
 	unsigned long currentScore;
+	int showProgressInterval = lineCount/10; // 10%
 	for(int l=0; l<lineCount; ++l) {
 		// got through all locks for inactivity, let threads work
 		for(int t=0; t<threadCount; ++t) {
@@ -152,6 +155,8 @@ void redrawInGrayscale(int lineCount,
 			for(unsigned int i=0; i<svgFiles.size(); ++i)
 				addLineGrey(*svgFiles[i], selectedLines[l-1]);
 		}
+		if(showProgress && l%showProgressInterval==0)
+			std::cout << "lines: " << l << "/" << lineCount << "   progress: ~" << ((l*100)/lineCount) << "%" << std::endl;
 		// go active again after threads finish
 		for(int t=0; t<threadCount; ++t)
 			lcGetNextLock(lc[t], currLock[t]);
@@ -168,8 +173,12 @@ void redrawInGrayscale(int lineCount,
 		drawGrayscaleLine(img, selectedLines[l], lineOpacity, !additive);
 	}
 	// push remaining line to svg files
-	for(unsigned int i=0; i<svgFiles.size(); ++i)
-		addLineGrey(*svgFiles[i], selectedLines[lineCount-1]);
+	if(lineCount > 0) {
+		for(unsigned int i=0; i<svgFiles.size(); ++i)
+			addLineGrey(*svgFiles[i], selectedLines[lineCount-1]);
+	}
+	if(showProgress)
+		std::cout << "lines: " << lineCount << "/" << lineCount << "   progress: ~100%" << std::endl;
 	// cleanup and waiting for threads to finish
 	for(int t=0; t<threadCount; ++t) {
 		lcUnlock(lc[t], currLock[t]);
