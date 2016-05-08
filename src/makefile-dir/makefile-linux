@@ -8,7 +8,7 @@ OBJECTS = $(BIN)/line-drawer.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-fil
 all: $(BIN)/bildolino-linux
 
 # this might need -lm sometime (not sure why, but it is used by libpng in certain cases)
-$(BIN)/bildolino-linux: $(OBJECTS)
+$(BIN)/bildolino-linux: main.cpp $(OBJECTS)
 	$(CC) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux -static $(CFLAGS) -pthread -lpng -ljpeg -lz
 
 object-files: $(OBJECTS)
