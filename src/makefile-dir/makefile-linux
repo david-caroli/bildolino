@@ -8,8 +8,10 @@ OBJECTS = $(BIN)/line-drawer.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-fil
 all: $(BIN)/bildolino-linux
 
 # this might need -lm sometime (not sure why, but it is used by libpng in certain cases)
+# compiling statically, linking -pthread while using std::thread does not work and leads to a (very frustrating) segfault
+# use "-Wl,--whole-archive -lpthread -Wl,--no-whole-archive" (source: http://stackoverflow.com/a/31265512)
 $(BIN)/bildolino-linux: main.cpp $(OBJECTS)
-	$(CC) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux -static $(CFLAGS) -pthread -lpng -ljpeg -lz
+	$(CC) main.cpp $(OBJECTS) -o $(BIN)/bildolino-linux -static $(CFLAGS) -Wl,--whole-archive -lpthread -Wl,--no-whole-archive -lpng -ljpeg -lz
 
 object-files: $(OBJECTS)
 
