@@ -19,7 +19,7 @@ $(BIN)/line-drawer.o: line-drawer.hpp line-drawer.cpp $(BIN)/bresenham-line-algo
 	$(CC) $(CFLAGS) -c line-drawer.cpp -o $(BIN)/line-drawer.o
 
 $(BIN)/bresenham-line-algorithms.o: bresenham-line-algorithms.hpp bresenham-line-algorithms.cpp line-struct.hpp
-	$(CC) $(CFLAGS) -c bresenham-line-algorithms.cpp -o $(BIN)/bresenham-line-algorithms.o
+	$(CC) $(CFLAGS) -O3 -c bresenham-line-algorithms.cpp -o $(BIN)/bresenham-line-algorithms.o
 
 $(BIN)/svg-files.o: svg-files.hpp svg-files.cpp line-struct.hpp
 	$(CC) $(CFLAGS) -c svg-files.cpp -o $(BIN)/svg-files.o
