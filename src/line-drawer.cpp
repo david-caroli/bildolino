@@ -259,7 +259,8 @@ void grayscaleTestLineThread(int lineCount,
 	for(int t=0; t<threadNumber; ++t)
 		yRangeStart += (img->height()/threadCount) + (t<(img->height()%threadCount) ? 1:0);
 	int yRange = (img->height()/threadCount) + (threadNumber<(img->height()%threadCount) ? 1:0);
-	std::minstd_rand randGen;
+	std::random_device rd;
+	std::minstd_rand randGen(rd());
 	std::uniform_int_distribution<int> xDistribution(0, xRange-1);
 	std::uniform_int_distribution<int> yDistribution(0, yRange-1);
 	
