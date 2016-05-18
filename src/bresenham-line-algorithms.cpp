@@ -33,7 +33,11 @@ void drawGrayscaleLineNormalAngleAdditive(boost::gil::gray8_view_t &img, LineDat
 	const int maxX = 1+line.b.x;
 
 	for(int x=line.a.x; x<maxX; x++) {
-		img(x,y) = (img(x,y)+opacity) % 256;
+		if(img(x,y) < (255-opacity)) {
+			img(x,y) = img(x,y)+opacity;
+		} else {
+			img(x,y) = 255;
+		}
 		error -= dy;
 		if(error < 0) {
 			y += ystep;
@@ -54,7 +58,11 @@ void drawGrayscaleLineSteepAngleAdditive(boost::gil::gray8_view_t &img, LineData
 	const int maxX = 1+line.b.x;
 
 	for(int x=line.a.x; x<maxX; x++) {
-		img(y,x) = (img(y,x)+opacity) % 256;
+		if(img(y,x) < (255-opacity)) {
+			img(y,x) = img(y,x)+opacity;
+		} else {
+			img(y,x) = 255;
+		}
 		error -= dy;
 		if(error < 0) {
 			y += ystep;
