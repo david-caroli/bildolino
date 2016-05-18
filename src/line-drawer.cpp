@@ -278,7 +278,7 @@ void grayscaleTestLineThread(int lineCount,
 		// score init test line starting from the bottom
 		bestLine->a.x = xRangeStart + xDistribution(randGen);
 		bestLine->a.y = yBot;
-		bestLine->b = getLineBorderPoint(currLine.a, bestPixels[l], xRight, yBot);
+		bestLine->b = getLineBorderPoint(bestLine->a, bestPixels[l], xRight, yBot);
 		*bestLineScore = grayscaleLineScore(*img, *bestLine);
 		// score test lines
 		for(testL=1; testL<testLineCount;) {
