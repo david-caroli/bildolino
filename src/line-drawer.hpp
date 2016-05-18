@@ -62,6 +62,7 @@ int getPixelPos(int curPixelValue, int resultSize, PixelCoords *result, bool add
 
 void grayscaleTestLineThread(int lineCount,
 							 int testLineCount,
+							 int lineOpacity,
 							 bool additive, // false -> subtractive
 							 int threadCount,
 							 int threadNumber,

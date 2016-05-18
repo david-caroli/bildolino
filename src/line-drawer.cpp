@@ -132,7 +132,7 @@ void redrawInGrayscale(int lineCount,
 	unsigned long bestLineScore[threadCount];
 	//TestViewWrapper testWrapper[threadCount];
 	for(int t=0; t<threadCount; ++t) {
-		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), additive, threadCount, t, &lc[t], &bestPixels[0], &img, &bestLineScore[t], &bestLine[t]);
+		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), lineOpacity, additive, threadCount, t, &lc[t], &bestPixels[0], &img, &bestLineScore[t], &bestLine[t]);
 	}
 	// wait for threads to initiate lock circles
 	for(int t=0; t<threadCount; ++t) {
@@ -237,6 +237,7 @@ int getPixelPos(int curPixelValue, int resultSize, PixelCoords *result, bool add
 
 void grayscaleTestLineThread(int lineCount,
 							 int testLineCount,
+							 int lineOpacity,
 							 bool additive, // false -> subtractive
 							 int threadCount,
 							 int threadNumber,
@@ -279,7 +280,7 @@ void grayscaleTestLineThread(int lineCount,
 		bestLine->a.x = xRangeStart + xDistribution(randGen);
 		bestLine->a.y = yBot;
 		bestLine->b = getLineBorderPoint(bestLine->a, bestPixels[l], xRight, yBot);
-		*bestLineScore = grayscaleLineScore(*img, *bestLine);
+		*bestLineScore = grayscaleLineScore(*img, *bestLine, lineOpacity);
 		// score test lines
 		for(testL=1; testL<testLineCount;) {
 			// iterate the for rectangle sides
@@ -304,7 +305,7 @@ void grayscaleTestLineThread(int lineCount,
 				}
 				currLine.b = getLineBorderPoint(currLine.a, bestPixels[l], xRight, yBot);
 				// score test line and compare to best test line
-				currScore = grayscaleLineScore(*img, currLine);
+				currScore = grayscaleLineScore(*img, currLine, lineOpacity);
 				if((currScore > *bestLineScore) == additive) {
 					*bestLine = currLine;
 					*bestLineScore = currScore;

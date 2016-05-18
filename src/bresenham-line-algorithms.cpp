@@ -125,17 +125,17 @@ void drawGrayscaleLineSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineD
 
 
 
-unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line) {
+unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line, int opacity) {
 	if(abs(line.b.y - line.a.y) > abs(line.b.x - line.a.x)) {
 		std::swap(line.a.x, line.a.y);
 		std::swap(line.b.x, line.b.y);
-		return grayscaleLineScoreSteepAngle(img, line);
+		return grayscaleLineScoreSteepAngle(img, line, opacity);
 	} else {
-		return grayscaleLineScoreNormalAngle(img, line);
+		return grayscaleLineScoreNormalAngle(img, line, opacity);
 	}
 }
 
-unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineData line) {
+unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineData line, int opacity) {
 	if(line.a.x > line.b.x)
 		std::swap(line.a, line.b);
 
@@ -148,7 +148,11 @@ unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineD
 	unsigned long score = 0;
 
 	for(int x=line.a.x; x<maxX; x++) {
-		score += img(x,y);
+		if(img(x,y) < opacity) {
+			score += img(x,y);
+		} else {
+			score += opacity;
+		}
 		error -= dy;
 		if(error < 0) {
 			y += ystep;
@@ -158,7 +162,7 @@ unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineD
 	return score;
 }
 
-unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineData line) {
+unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineData line, int opacity) {
 	if(line.a.x > line.b.x)
 		std::swap(line.a, line.b);
 
@@ -171,7 +175,11 @@ unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineDa
 	unsigned long score = 0;
 
 	for(int x=line.a.x; x<maxX; x++) {
-		score += img(y,x);
+		if(img(y,x) < opacity) {
+			score += img(y,x);
+		} else {
+			score += opacity;
+		}
 		error -= dy;
 		if(error < 0) {
 			y += ystep;
