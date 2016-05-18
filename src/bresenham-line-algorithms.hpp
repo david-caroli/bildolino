@@ -15,9 +15,11 @@ void drawGrayscaleLineNormalAngleSubtractive(boost::gil::gray8_view_t &img, Line
 void drawGrayscaleLineSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity);
 
 // uses the bresenham algorithm to calculate a score of how much a drawn 1 pixel grayscale line would change the image
-unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line, int lineOpacity);
-unsigned long grayscaleLineScoreNormalAngle(boost::gil::gray8_view_t &img, LineData line, int opacity);
-unsigned long grayscaleLineScoreSteepAngle(boost::gil::gray8_view_t &img, LineData line, int opacity);
+unsigned long grayscaleLineScore(boost::gil::gray8_view_t &img, LineData line, int opacity, bool additive);
+unsigned long grayscaleLineScoreNormalAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+unsigned long grayscaleLineScoreSteepAngleAdditive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+unsigned long grayscaleLineScoreNormalAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity);
+unsigned long grayscaleLineScoreSteepAngleSubtractive(boost::gil::gray8_view_t &img, LineData line, int opacity);
 
 
 

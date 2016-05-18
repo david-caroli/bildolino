@@ -164,7 +164,7 @@ void redrawInGrayscale(int lineCount,
 		currentScore = bestLineScore[0];
 		selectedLines[l] = bestLine[0];
 		for(int t=1; t<threadCount; ++t) {
-			if((currentScore < bestLineScore[t]) == additive) {
+			if(currentScore < bestLineScore[t]) {
 				currentScore = bestLineScore[t];
 				selectedLines[l] = bestLine[t];
 			}
@@ -280,7 +280,7 @@ void grayscaleTestLineThread(int lineCount,
 		bestLine->a.x = xRangeStart + xDistribution(randGen);
 		bestLine->a.y = yBot;
 		bestLine->b = getLineBorderPoint(bestLine->a, bestPixels[l], xRight, yBot);
-		*bestLineScore = grayscaleLineScore(*img, *bestLine, lineOpacity);
+		*bestLineScore = grayscaleLineScore(*img, *bestLine, lineOpacity, additive);
 		// score test lines
 		for(testL=1; testL<testLineCount;) {
 			// iterate the for rectangle sides
@@ -305,8 +305,8 @@ void grayscaleTestLineThread(int lineCount,
 				}
 				currLine.b = getLineBorderPoint(currLine.a, bestPixels[l], xRight, yBot);
 				// score test line and compare to best test line
-				currScore = grayscaleLineScore(*img, currLine, lineOpacity);
-				if((currScore > *bestLineScore) == additive) {
+				currScore = grayscaleLineScore(*img, currLine, lineOpacity, additive);
+				if(currScore > *bestLineScore) {
 					*bestLine = currLine;
 					*bestLineScore = currScore;
 				}
