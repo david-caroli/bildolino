@@ -200,7 +200,7 @@ void sortPixels(int pixelCount, PixelCoords *result, bool additive, boost::gil::
 			if(pos < pixelCount) {
 				if(sorted < pixelCount) // grow until array is full
 					++sorted;
-				for(int i=sorted; i>pos; --i)
+				for(int i=sorted-1; i>pos; --i)
 					result[i] = result[i-1];
 				result[pos].x = x;
 				result[pos].y = y;
@@ -217,16 +217,16 @@ int getPixelPos(int curPixelValue, int resultSize, PixelCoords *result, bool add
 	while(left != right) {
 		center = (left+right)/2;
 		if(additive) {
-			if(img(result[center].x, result[center].y) <= curPixelValue) {
-				left = center+1;
-			} else {
+			if(img(result[center].x, result[center].y) < curPixelValue) {
 				right = center;
+			} else {
+				left = center+1;
 			}
 		} else {
-			if(img(result[center].x, result[center].y) >= curPixelValue) {
-				left = center+1;
-			} else {
+			if(img(result[center].x, result[center].y) > curPixelValue) {
 				right = center;
+			} else {
+				left = center+1;
 			}
 		}
 	}
