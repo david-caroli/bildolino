@@ -128,11 +128,11 @@ void redrawInGrayscale(int lineCount,
 	}
 	// start threads
 	std::thread *tlThread[threadCount];
-	LineData bestLine[threadCount];
-	unsigned long bestLineScore[threadCount];
+	LineData bestThreadLine[threadCount];
+	unsigned long bestThreadLineScore[threadCount];
 	//TestViewWrapper testWrapper[threadCount];
 	for(int t=0; t<threadCount; ++t) {
-		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), lineOpacity, additive, threadCount, t, &lc[t], &bestPixels[0], &img, &bestLineScore[t], &bestLine[t]);
+		tlThread[t] = new std::thread(grayscaleTestLineThread, lineCount, (testLineCount/threadCount) + (t<(testLineCount%threadCount) ? 1:0), lineOpacity, additive, threadCount, t, &lc[t], &bestPixels[0], &img, &bestThreadLineScore[t], &bestThreadLine[t]);
 	}
 	// wait for threads to initiate lock circles
 	for(int t=0; t<threadCount; ++t) {
@@ -161,12 +161,12 @@ void redrawInGrayscale(int lineCount,
 		for(int t=0; t<threadCount; ++t)
 			lcGetNextLock(lc[t], currLock[t]);
 		// find best line
-		currentScore = bestLineScore[0];
-		selectedLines[l] = bestLine[0];
+		currentScore = bestThreadLineScore[0];
+		selectedLines[l] = bestThreadLine[0];
 		for(int t=1; t<threadCount; ++t) {
-			if(currentScore < bestLineScore[t]) {
-				currentScore = bestLineScore[t];
-				selectedLines[l] = bestLine[t];
+			if(currentScore < bestThreadLineScore[t]) {
+				currentScore = bestThreadLineScore[t];
+				selectedLines[l] = bestThreadLine[t];
 			}
 		}
 		// substract best line from image (negate additive)
