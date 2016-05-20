@@ -1,16 +1,16 @@
 #include "svg-files.hpp"
 
 void initSvg(std::fstream &outFile, int height, int width, bool blackBackground, int lineOpacity, int lineThickness){
-	outFile << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width = \"" << width << "\" height = \"" << height << "\">"
-	outFile << "\n\t<defs>"
-	outFile << "\n\t\t<style type=\"text/css\"><![CDATA["
-	outFile << "\n\t\t\tline{"
-	outFile << "\n\t\t\t\tstroke-width:"<< lineThickness <<" ;"
-	outFile << "\n\t\t\t\tstroke-opacity:"<< ((float)lineOpacity/255) <<" ;"
-	outFile << "\n\t\t\t\tstroke:"<< (blackBackground ? "white":"black") <<" ;"
-	outFile << "\n\t\t\t}"
-	outFile << "\n\t\t]]></style>"
-	outFile << "\n\t</defs>"
+	outFile << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width = \"" << width << "\" height = \"" << height << "\">";
+	outFile << "\n\t<defs>";
+	outFile << "\n\t\t<style type=\"text/css\"><![CDATA[";
+	outFile << "\n\t\t\tline{";
+	outFile << "\n\t\t\t\tstroke-width:"<< lineThickness <<" ;";
+	outFile << "\n\t\t\t\tstroke-opacity:"<< ((float)lineOpacity/255) <<" ;";
+	outFile << "\n\t\t\t\tstroke:"<< (blackBackground ? "white":"black") <<" ;";
+	outFile << "\n\t\t\t}";
+	outFile << "\n\t\t]]></style>";
+	outFile << "\n\t</defs>";
 	outFile << "\n<rect width = \""<< width <<"\" height = \""<< height <<"\" fill=\""<< (blackBackground ? "black":"white") <<"\"/>\n";
 }
 
