@@ -2,7 +2,7 @@
 BIN = ../bin
 CC = g++
 CFLAGS = -std=c++11
-OBJECTS = $(BIN)/line-drawer.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o $(BIN)/line-rectangle-intersection.o $(BIN)/lock-circle.o
+OBJECTS = $(BIN)/line-drawer.o $(BIN)/pixel-sorting.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o $(BIN)/line-rectangle-intersection.o $(BIN)/lock-circle.o
 
 
 all: $(BIN)/bildolino-linux
@@ -15,8 +15,11 @@ $(BIN)/bildolino-linux: main.cpp $(OBJECTS)
 
 object-files: $(OBJECTS)
 
-$(BIN)/line-drawer.o: line-drawer.hpp line-drawer.cpp $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o $(BIN)/line-rectangle-intersection.o $(BIN)/lock-circle.o
+$(BIN)/line-drawer.o: line-drawer.hpp line-drawer.cpp $(BIN)/pixel-sorting.o $(BIN)/bresenham-line-algorithms.o $(BIN)/svg-files.o $(BIN)/line-rectangle-intersection.o $(BIN)/lock-circle.o
 	$(CC) $(CFLAGS) -c line-drawer.cpp -o $(BIN)/line-drawer.o
+
+$(BIN)/pixel-sorting.o: pixel-sorting.hpp pixel-sorting.cpp line-struct.hpp
+	$(CC) $(CFLAGS) -O3 -c pixel-sorting.cpp -o $(BIN)/pixel-sorting.o
 
 $(BIN)/bresenham-line-algorithms.o: bresenham-line-algorithms.hpp bresenham-line-algorithms.cpp line-struct.hpp
 	$(CC) $(CFLAGS) -O3 -c bresenham-line-algorithms.cpp -o $(BIN)/bresenham-line-algorithms.o
