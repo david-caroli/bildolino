@@ -135,9 +135,9 @@ void redrawImage(int lineCount,
 	for(int channel=0; channel<channelCount; ++channel) {
 		bestPixels[channel] = new PixelCoords[lineCount];
 		if(grayscale) {
-			sortPixels(lineCount, bestPixels[channel], additive, imgGray);
+			sortPixelsRandomized(lineCount, bestPixels[channel], additive, imgGray);
 		} else {
-			sortPixels(lineCount, bestPixels[channel], additive, imgRGB, channel);
+			sortPixelsRandomized(lineCount, bestPixels[channel], additive, imgRGB, channel);
 		}
 	}
 	if(showProgress)
