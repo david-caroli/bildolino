@@ -83,30 +83,32 @@ void loadAndRedrawImage(int lineCount,
 
 
 bool loadGrayImage(std::string inputFile, gray8_image_t &img) {
-	// try jpeg format
-	try {
-		jpeg_read_and_convert_image(inputFile.c_str(), img);
-		return true;
-	} catch(std::ios_base::failure e) {}
 	// try png format
 	try {
 		png_read_and_convert_image(inputFile.c_str(), img);
 		return true;
 	} catch(std::ios_base::failure e) {}
+	// try jpeg format
+	try {
+		jpeg_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// TODO jpeg_read_and_convert_image() makes a jpeglib call that will call exit() and terminate the process when an error occurs. should be caught and handled better.
 	// unable to read file or neither jpeg nor png
 	return false;
 }
 bool loadRGBImage(std::string inputFile, rgb8_image_t &img) {
-	// try jpeg format
-	try {
-		jpeg_read_and_convert_image(inputFile.c_str(), img);
-		return true;
-	} catch(std::ios_base::failure e) {}
 	// try png format
 	try {
 		png_read_and_convert_image(inputFile.c_str(), img);
 		return true;
 	} catch(std::ios_base::failure e) {}
+	// try jpeg format
+	try {
+		jpeg_read_and_convert_image(inputFile.c_str(), img);
+		return true;
+	} catch(std::ios_base::failure e) {}
+	// TODO jpeg_read_and_convert_image() makes a jpeglib call that will call exit() and terminate the process when an error occurs. should be caught and handled better.
 	// unable to read file or neither jpeg nor png
 	return false;
 }
