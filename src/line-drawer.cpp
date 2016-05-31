@@ -20,6 +20,8 @@ void loadAndRedrawImage(int lineCount,
 						bool showProgress,
 						bool showWarnings,
 						bool showErrors) {
+	std::chrono::steady_clock::time_point timeStart, timeLoaded, timeSorted, timeEnd;
+	timeStart = std::chrono::steady_clock::now();
 	gray8_image_t imgGray;
 	rgb8_image_t imgRGB;
 	if(grayscale) {
@@ -37,6 +39,7 @@ void loadAndRedrawImage(int lineCount,
 	}
 	gray8_view_t imgGrayView = view(imgGray);
 	rgb8_view_t imgRGBView = view(imgRGB);
+	timeLoaded = std::chrono::steady_clock::now();
 	if(showProgress)
 		std::cout << "image loaded" << std::endl;
 	// TODO implement resizing
@@ -67,7 +70,7 @@ void loadAndRedrawImage(int lineCount,
 		}
 	}
 	// draw
-	redrawImage(lineCount, testLineCount, lineOpacity, lineWidth, additive, grayscale, threadCount, showProgress, showWarnings, showErrors, imgGrayView, imgRGBView, svgFiles);
+	redrawImage(lineCount, testLineCount, lineOpacity, lineWidth, additive, grayscale, threadCount, showProgress, showWarnings, showErrors, imgGrayView, imgRGBView, svgFiles, timeSorted);
 	// close svg files
 	for(unsigned int i=0; i<svgFiles.size(); ++i) {
 		finishSvg(*svgFiles[i]);
@@ -77,6 +80,17 @@ void loadAndRedrawImage(int lineCount,
 	if(showProgress)
 		std::cout << "svg file(s) saved" << std::endl;
 	// TODO draw and save result to png and jpeg files
+	if(showProgress) {
+		timeEnd = std::chrono::steady_clock::now();
+		std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(timeLoaded - timeStart);
+		std::cout << "times:   loading: ~" << (ms.count()/1000) << "s";
+		ms = std::chrono::duration_cast<std::chrono::milliseconds>(timeSorted - timeLoaded);
+		std::cout << "   sorting: ~" << (ms.count()/1000) << "s";
+		ms = std::chrono::duration_cast<std::chrono::milliseconds>(timeEnd - timeSorted);
+		std::cout << "   drawing: ~" << (ms.count()/1000) << "s";
+		ms = std::chrono::duration_cast<std::chrono::milliseconds>(timeEnd - timeStart);
+		std::cout << "   overall: ~" << (ms.count()/1000) << "s" << std::endl;
+	}
 }
 
 
@@ -126,7 +140,8 @@ void redrawImage(int lineCount,
 				 bool showErrors,
 				 gray8_view_t &imgGray,
 				 rgb8_view_t &imgRGB,
-				 std::vector<std::fstream*> &svgFiles) {
+				 std::vector<std::fstream*> &svgFiles,
+				 std::chrono::steady_clock::time_point &sortingFinished) {
 	int channelCount = (grayscale ? 1:3);
 	// sort pixels
 	if(showProgress)
@@ -140,6 +155,7 @@ void redrawImage(int lineCount,
 			sortPixelsRandomized(lineCount, bestPixels[channel], additive, imgRGB, channel);
 		}
 	}
+	sortingFinished = std::chrono::steady_clock::now();
 	if(showProgress)
 		std::cout << "pixels sorted" << std::endl;
 	// initiate lock circles for each thread

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <chrono>
 #include "line-drawer.hpp"
 #include <string.h>
 
@@ -392,8 +391,6 @@ int main(int argc, char **argv) {
 			return 0;
 		} else if(!convert && render){
 			if(!inputFile.empty()) {
-				std::chrono::steady_clock::time_point a, b;
-				a = std::chrono::steady_clock::now();
 				std::cout << "Starting render sequence." << std::endl;
 				loadAndRedrawImage(lineCount, // lineCount
 								   testLineCount, // testLineCount
@@ -411,9 +408,6 @@ int main(int argc, char **argv) {
 								   showWarnings, // showWarnings,
 								   showErrors); // showErrors);
 				std::cout << "Ending render sequence." << std::endl;
-				b = std::chrono::steady_clock::now();
-				std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(b - a);
-				std::cout << "duration: " << ms.count() << " milliseconds" << std::endl;
 				return 0;
 			} else {
 				std::cout << "No input file was found." << std::endl;

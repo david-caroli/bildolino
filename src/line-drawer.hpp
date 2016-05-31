@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <chrono>
 #include "bresenham-line-algorithms.hpp"
 #include "svg-files.hpp"
 #include "pixel-sorting.hpp"
@@ -58,7 +59,8 @@ void redrawImage(int lineCount,
 				 bool showErrors,
 				 boost::gil::gray8_view_t &imgGray,
 				 boost::gil::rgb8_view_t &imgRGB,
-				 std::vector<std::fstream*> &svgFiles);
+				 std::vector<std::fstream*> &svgFiles,
+				 std::chrono::steady_clock::time_point &sortingFinished);
 
 void testLineThread(int lineCount,
 					int testLineCount,
