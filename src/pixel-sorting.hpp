@@ -2,6 +2,7 @@
 #define PIXEL_SORTING_HPP
 
 #include <boost/gil/gil_all.hpp>
+#include <random>
 #include "line-struct.hpp"
 
 

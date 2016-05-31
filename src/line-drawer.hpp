@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <random>
 #include <chrono>
 #include "bresenham-line-algorithms.hpp"
 #include "svg-files.hpp"
